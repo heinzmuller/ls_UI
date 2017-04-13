@@ -184,13 +184,13 @@ function E:TimeFormat(v)
 	elseif v >= 60 then
 		return Round(v / 60), "|cffe5e5e5", MINUTE_ONELETTER_ABBR
 	elseif v >= 30 then
-		return Round(v), "|cffe5e5e5", SECOND_ONELETTER_ABBR
+		return Round(v), "|cffffffff", "%d"
 	elseif v >= 10 then
-		return Round(v), "|cffffbf19", SECOND_ONELETTER_ABBR
+		return Round(v), "|cffffffff", "%d"
 	elseif v >= 1 then
-		return Round(v), "|cffe51919", SECOND_ONELETTER_ABBR
+		return Round(v), "|cffffffff", "%d"
 	else
-		return tonumber(string.format("%.1f", v)), "|cffe51919", "%.1f"
+		return tonumber(string.format("%.1f", v)), "|cffffffff", "%.1f"
 	end
 end
 
