@@ -2,7 +2,7 @@ local _, ns = ...
 local D = ns.D
 
 D["units"] = {
-	enabled =  true,
+	enabled =  false,
 	player = {
 		enabled = true,
 		castbar = true,
@@ -64,7 +64,7 @@ D["units"] = {
 }
 
 D["auratracker"] = {
-	enabled = true,
+	enabled = false,
 	locked = false,
 	button_size = 36,
 	button_gap = 4,
@@ -76,52 +76,52 @@ D["auratracker"] = {
 
 D["minimap"] = {
 	enabled = true,
-	point = {"BOTTOM", "UIParent", "BOTTOM", 312 , 74},
+	point = {"TOPRIGHT", "UIParent", "TOPRIGHT", -20, -25},
 }
 
 D["bars"] = {
 	enabled = true,
 	restricted = true,
-	show_hotkey = true,
-	show_name = true,
+	show_hotkey = false,
+	show_name = false,
 	use_icon_as_indicator = true,
 	bar1 = { -- MainMenuBar
 		visible = true,
 		point = {"BOTTOM", 0, 16},
-		button_size = 32,
-		button_gap = 4,
+		button_size = 28,
+		button_gap = 8,
 		init_anchor = "TOPLEFT",
 		buttons_per_row = 12,
 	},
 	bar2 = { -- MultiBarBottomLeft
 		visible = true,
 		point = {"BOTTOM", 0, 52},
-		button_size = 32,
-		button_gap = 4,
+		button_size = 28,
+		button_gap = 8,
 		init_anchor = "TOPLEFT",
 		buttons_per_row = 12,
 	},
 	bar3 = { -- MultiBarBottomRight
 		visible = true,
 		point = {"BOTTOM", 0, 88},
-		button_size = 32,
-		button_gap = 4,
+		button_size = 28,
+		button_gap = 8,
 		init_anchor = "TOPLEFT",
 		buttons_per_row = 12,
 	},
 	bar4 = { -- MultiBarLeft
 		visible = true,
 		point = {"BOTTOMRIGHT", -40, 240},
-		button_size = 32,
-		button_gap = 4,
+		button_size = 28,
+		button_gap = 8,
 		init_anchor = "TOPRIGHT",
 		buttons_per_row = 1,
 	},
 	bar5 = { -- MultiBarRight
 		visible = true,
 		point = {"BOTTOMRIGHT", -4, 240},
-		button_size = 32,
-		button_gap = 4,
+		button_size = 28,
+		button_gap = 8,
 		init_anchor = "TOPRIGHT",
 		buttons_per_row = 1,
 	},
@@ -179,7 +179,7 @@ D["bars"] = {
 }
 
 D["auras"] = {
-	enabled = true,
+	enabled = false,
 	buff = {
 		point = {"TOPRIGHT", "UIParent", "TOPRIGHT", -4, -4},
 	},
