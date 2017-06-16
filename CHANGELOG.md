@@ -1,3 +1,45 @@
+## Version 70200.08
+
+- Reworked in-game config;
+- Updated embeds.
+
+NOTE: This update is huge, there's definitely some bugs here and there.
+
+## Version 70200.07
+
+- Addon now uses AceDB. I strongly recommend to /reload UI right after your first login on each char, otherwise you risk losing all your settings if you get DCed;
+- Not full class powers are now a bit dimmed.
+
+NOTE: You have to restart your client to make this update work.
+
+## Version 70200.06
+
+- Fixed loading process.
+
+## Version 70200.05
+
+- Reworked unit frames;
+- Fixed old bug in action button code. It's affecting game performance quite significantly.
+
+KNOWN CAVEATS: Player health bar texture may distort/stretch from time to time. It's a known Blizzard bug, I already reported it, and it's fixed in the latest PTR build.
+
+NOTE #1: There's no in-game config for new unit frames' features yet, however, new unit frames are quite customisable, e.g., you can resize them, enable/disable various elements, etc, so you may want to edit /core/defaults.lua file. I'm not adding new features to in-game config just yet, because I need to add optional horizontal player and pet frames, alternative layout style, figure out new config table(s) structure, and while doing so I also need to consider future addition of profiles. And only then I can start working on new in-game config which will be based on Ace* libs, basically ls: UI is slowly turning into ElvUI w/ artwork.
+
+NOTE #2: I'll be removing AuraTracker in the near future, I tend to use WA more and more nowadays.
+
+## Version 70200.04
+
+- Updated embedded oUF to 7.0.0;
+- Misc bug fixes and tweaks.
+
+## Version 70200.03
+
+- Slimmed down cast bars. I'm currently preparing for unit frame revamp, so I needed to make cast bars a bit more compact;
+- Reworked main micro button tooltip. Because many people have either way too many addons installed or use quite "heavy" addons, calculations that are necessary for memory usage info may cause micro freezes. As of now, memory usage info won't be shown until you hold down shift key;
+- Fixed artefact trait tooltips;
+- Fixed action bar controller issues;
+- Misc bug fixes and tweaks.
+
 ## Version 70200.02
 
 - Added paragon rep support to the rep bar;

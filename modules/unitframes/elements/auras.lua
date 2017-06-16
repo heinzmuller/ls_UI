@@ -4,8 +4,7 @@ local UF = P:GetModule("UnitFrames")
 
 -- Lua
 local _G = getfenv(0)
-local math = _G.math
-local bit = _G.bit
+local b_lshift = _G.bit.lshift
 local next = _G.next
 
 -- Blizz
@@ -14,9 +13,6 @@ local UnitIsFriend = _G.UnitIsFriend
 local UnitIsUnit = _G.UnitIsUnit
 
 -- Mine
-local AURA_GAP = 4
-local AURA_SIZE = 28
-local AURAS_PER_ROW = 6
 local MOUNTS = {}
 
 for _, id in next, C_MountJournal.GetMountIDs() do
@@ -79,6 +75,19 @@ local BLACKLIST = {
 	[225788] = true, -- Sign of the Emissary
 	[227723] = true, -- Mana Divining Stone
 	[231115] = true, -- Treasures of Broken Shore
+	[233641] = true, -- Legionfall Commander
+	[237137] = true, -- Knowledgeable
+	[237139] = true, -- Power Overwhelming
+	[239966] = true, -- War Effort
+	[239967] = true, -- Seal Your Fate
+	[239968] = true, -- Fate Smiles Upon You
+	[239969] = true, -- Netherstorm
+	[240979] = true, -- Reputable
+	[240980] = true, -- Light As a Feather
+	[240985] = true, -- Reinforced Reins
+	[240986] = true, -- Worthy Champions
+	[240987] = true, -- Well Prepared
+	[240989] = true, -- Heavily Augmented
 }
 
 local function SetVertexColorOverride(self, r, g, b)
@@ -106,8 +115,8 @@ local function AuraButton_OnLeave()
 	_G.GameTooltip:Hide()
 end
 
-local function CreateAuraIcon(frame, index)
-	local button = E:CreateButton(frame, "$parentButton"..index, true)
+local function CreateAuraIcon(element, index)
+	local button = E:CreateButton(element, "$parentAura"..index, true)
 
 	button.icon = button.Icon
 	button.Icon = nil
@@ -154,67 +163,91 @@ local function CreateAuraIcon(frame, index)
 end
 
 local filterFunctions = {
-	default = function(frame, unit, aura, _, _, _, count, debuffType, duration, _, caster, isStealable, _, spellID, _, isBossAura)
+	default = function(frame, unit, aura, _, _, _, _, debuffType, duration, _, caster, isStealable, _, spellID, _, isBossAura)
 		-- blacklist
 		if BLACKLIST[spellID] then
 			return false
 		end
 
-		local config = frame.cfg
 		local isFriend = UnitIsFriend("player", unit)
-		local friendlyBuffFlag = (isFriend and not aura.isDebuff) and E:GetPlayerSpecFlag() or 0x00000000
-		local hostileBuffFlag = (not isFriend and not aura.isDebuff) and bit.lshift(E:GetPlayerSpecFlag(), 4) or 0x00000000
-		local friendlyDebuffFlag = (isFriend and aura.isDebuff) and bit.lshift(E:GetPlayerSpecFlag(), 8) or 0x00000000
-		local hostileDebuffFlag = (not isFriend and aura.isDebuff) and bit.lshift(E:GetPlayerSpecFlag(), 12) or 0x00000000
-		local isPlayerAura = aura.isPlayer or (caster and UnitIsUnit(caster, "pet"))
+		local config = isFriend and frame._config.filter.friendly or frame._config.filter.enemy
+		config = aura.isDebuff and config.debuff or config.buff
+
+		if not config then
+			return
+		end
+
 		isBossAura = isBossAura or caster and (UnitIsUnit(caster, "boss1") or UnitIsUnit(caster, "boss2") or UnitIsUnit(caster, "boss3") or UnitIsUnit(caster, "boss4") or UnitIsUnit(caster, "boss5"))
 
 		-- boss
 		if isBossAura then
 			-- print(name, spellID, caster, "|cffe5a526BOSS|r")
-			return E:CheckFlag(config.show_boss, hostileDebuffFlag, friendlyDebuffFlag, hostileBuffFlag, friendlyBuffFlag)
+			return config.boss
 		end
 
 		-- mounts
 		if MOUNTS[spellID] then
 			-- print(name, spellID, caster, "|cffe5a526MOUNT|r")
-			return E:CheckFlag(config.show_mount, hostileBuffFlag, friendlyBuffFlag)
+			return config.mount
 		end
 
 		-- self-cast
 		if caster and UnitIsUnit(unit, caster) then
 			if duration and duration ~= 0 then
 				-- print(name, spellID, caster, "|cffe5a526SELFCAST|r")
-				return E:CheckFlag(config.show_selfcast, hostileDebuffFlag, friendlyDebuffFlag, hostileBuffFlag, friendlyBuffFlag)
+				return config.selfcast
 			else
 				-- print(name, spellID, caster, "|cffe5a526PERMA-SELFCAST|r")
-				return E:CheckFlag(config.show_selfcast_permanent, hostileDebuffFlag, friendlyDebuffFlag, hostileBuffFlag, friendlyBuffFlag)
+				return config.selfcast and config.selfcast_permanent
 			end
 		end
 
 		-- applied by player
-		if isPlayerAura and duration and duration ~= 0 then
-			return E:CheckFlag(config.show_player, hostileDebuffFlag, friendlyDebuffFlag, hostileBuffFlag, friendlyBuffFlag)
+		if aura.isPlayer or (caster and UnitIsUnit(caster, "pet")) then
+			if duration and duration ~= 0 then
+				return config.player
+			else
+				return config.player and config.player_permanent
+			end
 		end
 
 		if isFriend then
-			if aura.filter == "HARMFUL"then
+			if aura.isDebuff then
 				-- dispellable
 				if debuffType and E:IsDispellable(debuffType) then
 					-- print(name, spellID, caster, "|cffe5a526DISPELLABLE|r")
-					return E:CheckFlag(config.show_dispellable, friendlyBuffFlag)
+					return config.dispellable
 				end
 			end
 		else
 			-- stealable
-			if isStealable and not UnitIsUnit(unit, "player") then
+			if isStealable then
 				-- print(name, spellID, caster, "|cffe5a526STEALABLE|r")
-				return E:CheckFlag(config.show_dispellable, hostileBuffFlag)
+				return config.dispellable
 			end
 		end
 
 		return false
-	end
+	end,
+	boss = function(frame, unit, aura, _, _, _, _, _, _, _, caster, _, _, _, _, isBossAura)
+		local isFriend = UnitIsFriend("player", unit)
+		local config = isFriend and frame._config.filter.friendly or frame._config.filter.enemy
+		config = aura.isDebuff and config.debuff or config.buff
+
+		if not config then
+			return
+		end
+
+		isBossAura = isBossAura or caster and (UnitIsUnit(caster, "boss1") or UnitIsUnit(caster, "boss2") or UnitIsUnit(caster, "boss3") or UnitIsUnit(caster, "boss4") or UnitIsUnit(caster, "boss5"))
+
+		-- boss
+		if isBossAura then
+			-- print(name, spellID, caster, "|cffe5a526BOSS|r")
+			return config.boss
+		end
+
+		return false
+	end,
 }
 
 local function UpdateAuraType(_, _, aura)
@@ -225,68 +258,60 @@ local function UpdateAuraType(_, _, aura)
 	end
 end
 
-function UF:CreateAuras(parent, unit, num, size, gap, perRow)
-	size = size or AURA_SIZE
-	gap = gap or AURA_GAP
-	perRow = perRow or AURAS_PER_ROW
-	local rows = math.ceil(num / perRow)
+function UF:CreateAuras(parent, unit)
+	local element = _G.CreateFrame("Frame", nil, parent)
 
-	local frame = _G.CreateFrame("Frame", "$parentAuras", parent)
-	frame:SetSize(size * math.min(num, perRow) + gap * math.min(num - 1, perRow - 1), size * rows + gap * (rows - 1))
+	element.spacing = 4
+	element.showDebuffType = true
+	element.showStealableBuffs = true
+	element.CreateIcon = CreateAuraIcon
+	element.CustomFilter = filterFunctions[unit] or filterFunctions.default
+	element.PostUpdateIcon = UpdateAuraType
+	element._config = C.db.profile.units[E.UI_LAYOUT][unit].auras
 
-	frame.numBuffs = num / 2
-	frame.numDebuffs = num / 2
-	frame.size = size
-	frame["spacing-x"] = gap
-	frame["spacing-y"] = gap
-	frame.showStealableBuffs = true
-	frame.showDebuffType = true
-	frame.CreateIcon = CreateAuraIcon
-	frame.CustomFilter = filterFunctions[unit] or filterFunctions.default
-	frame.PostUpdateIcon = UpdateAuraType
-	frame.cfg = C.units[unit].auras
-
-	return frame
+	return element
 end
 
-function UF:CreateBuffs(parent, unit, num, size, gap, perRow)
-	size = size or AURA_SIZE
-	gap = gap or AURA_GAP
-	perRow = perRow or AURAS_PER_ROW
-	local rows = math.ceil(num / perRow)
+function UF:UpdateAuras(frame)
+	local config = frame._config.auras
+	local element = frame.Auras
+	local size = config.size_override ~= 0 and config.size_override or E:Round((frame._config.width - (element.spacing * (config.per_row - 1)) + 2) / config.per_row)
 
-	local frame = _G.CreateFrame("Frame", "$parentBuffs", parent)
-	frame:SetSize(size * math.min(num, perRow) + gap * math.min(num - 1, perRow - 1), size * rows + gap * (rows - 1))
+	element:SetSize((size * config.per_row + element.spacing * (config.per_row - 1)), size * config.rows + element.spacing * (config.rows - 1))
 
-	frame.num = num
-	frame.size = size
-	frame["spacing-x"] = gap
-	frame["spacing-y"] = gap
-	frame.showStealableBuffs = true
-	frame.CreateIcon = CreateAuraIcon
-	frame.CustomFilter = filterFunctions[unit] or filterFunctions.default
-	frame.cfg = C.units[unit].auras
+	element.size = size
+	element.numTotal = config.per_row * config.rows
+	element.disableMouse = config.disable_mouse
+	element["growth-x"] = config.x_growth
+	element["growth-y"] = config.y_growth
 
-	return frame
-end
+	if config.y_growth == "UP" then
+		if config.x_growth == "RIGHT" then
+			element.initialAnchor = "BOTTOMLEFT"
+		else
+			element.initialAnchor = "BOTTOMRIGHT"
+		end
+	else
+		if config.x_growth == "RIGHT" then
+			element.initialAnchor = "TOPLEFT"
+		else
+			element.initialAnchor = "TOPRIGHT"
+		end
+	end
 
-function UF:CreateDebuffs(parent, unit, num, size, gap, perRow)
-	size = size or AURA_SIZE
-	gap = gap or AURA_GAP
-	perRow = perRow or AURAS_PER_ROW
-	local rows = math.ceil(num / perRow)
+	local point1 = config.point1
 
-	local frame = _G.CreateFrame("Frame", "$parentDebuffs", parent)
-	frame:SetSize(size * math.min(num, perRow) + gap * math.min(num - 1, perRow - 1), size * rows + gap * (rows - 1))
+	if point1 and point1.p then
+		element:SetPoint(point1.p, E:ResolveAnchorPoint(frame, point1.anchor), point1.rP, point1.x, point1.y)
+	end
 
-	frame.num = num
-	frame.size = size
-	frame["spacing-x"] = gap
-	frame["spacing-y"] = gap
-	frame.showType = true
-	frame.CreateIcon = CreateAuraIcon
-	frame.CustomFilter = filterFunctions[unit] or filterFunctions.default
-	frame.cfg = C.units[unit].auras
+	if config.enabled and not frame:IsElementEnabled("Auras") then
+		frame:EnableElement("Auras")
+	elseif not config.enabled and frame:IsElementEnabled("Auras") then
+		frame:DisableElement("Auras")
+	end
 
-	return frame
+	if frame:IsElementEnabled("Auras") then
+		element:ForceUpdate()
+	end
 end

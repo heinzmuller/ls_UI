@@ -1,4 +1,4 @@
-local _, ns = ...
+local addon, ns = ...
 local E, M, oUF = ns.E, ns.M, ns.oUF
 
 -- Lua
@@ -70,13 +70,22 @@ oUF.colors.reaction = {
 	[8] = {COLORS.GREEN:GetRGB()},
 }
 
-oUF.colors.power.ARCANE_CHARGES = {46 / 255, 124 / 255, 214 / 255} -- Munsell 5PB 5/12 (#2e7cd6)
-oUF.colors.power.COMBO_POINTS = {216 / 255, 75 / 255, 24 / 255} -- Munsell 10R 5/14 (#d84b18)
-oUF.colors.power.ENERGY = {COLORS.YELLOW:GetRGB()}
-oUF.colors.power.INSANITY = {126 / 255, 69 / 255, 180 / 255} -- Munsell 2.5P 4/14 (#7e45b4)
 oUF.colors.power.MANA = {COLORS.BLUE:GetRGB()}
+oUF.colors.power.ENERGY = {COLORS.YELLOW:GetRGB()}
+oUF.colors.power.COMBO_POINTS = {216 / 255, 75 / 255, 24 / 255} -- Munsell 10R 5/14 (#d84b18)
 oUF.colors.power.RUNES = {107 / 255, 183 / 255, 238 / 255} -- Munsell 10B 7/8 (#6bb7ee)
 oUF.colors.power.SOUL_SHARDS = {150 / 255, 97 / 255, 210 / 255} -- Munsell 2.5P 5/14 (#9661d2)
+oUF.colors.power.INSANITY = {126 / 255, 69 / 255, 180 / 255} -- Munsell 2.5P 4/14 (#7e45b4)
+oUF.colors.power.ARCANE_CHARGES = {46 / 255, 124 / 255, 214 / 255} -- Munsell 5PB 5/12 (#2e7cd6)
+
+-- remap
+oUF.colors.power[0] = oUF.colors.power.MANA
+oUF.colors.power[3] = oUF.colors.power.ENERGY
+oUF.colors.power[4] = oUF.colors.power.COMBO_POINTS
+oUF.colors.power[5] = oUF.colors.power.RUNES
+oUF.colors.power[7] = oUF.colors.power.SOUL_SHARDS
+oUF.colors.power[13] = oUF.colors.power.INSANITY
+oUF.colors.power[16] = oUF.colors.power.ARCANE_CHARGES
 
 for k, color in pairs(oUF.colors.power) do
 	if type(color[1]) ~= "table" then
@@ -127,7 +136,7 @@ COLORS.HEALPREDICTION = {
 	MY_HEAL = E:CreateColor(52, 140, 53), -- Munsell 10GY 5/10 (#348c35)
 	OTHER_HEAL = E:CreateColor(42, 111, 45), -- Munsell 10GY 4/8 (#2a6f2d)
 	HEAL_ABSORB = COLORS.DARK_RED,
-	DAMAGE_ABSORB = E:CreateColor(190, 201, 239), -- Munsell 5PB 8/4 (#bec9ef)
+	DAMAGE_ABSORB = COLORS.BLUE,
 }
 
 COLORS.FACTION = {
@@ -149,119 +158,119 @@ M.COLORS = COLORS
 local textures = {
 	icons = {
 		-- first line
-		["LEADER"] = {1 / 128, 17 / 128, 1 / 128, 17 / 128},
-		["DAMAGER"] = {18 / 128, 34 / 128, 1 / 128, 17 / 128},
-		["HEALER"] = {35 / 128, 51 / 128, 1 / 128, 17 / 128},
-		["TANK"] = {52 / 128, 68 / 128, 1 / 128, 17 / 128},
-		["RESTING"] = {69 / 128, 85 / 128, 1 / 128, 17 / 128},
-		["COMBAT"] = {86 / 128, 102 / 128, 1 / 128, 17 / 128},
-		["HORDE"] = {103 / 128, 119 / 128, 1 / 128, 17 / 128},
+		["LEADER"] = {1 / 256, 33 / 256, 1 / 256, 33 / 256},
+		["DAMAGER"] = {34 / 256, 66 / 256, 1 / 256, 33 / 256},
+		["HEALER"] = {67 / 256, 99 / 256, 1 / 256, 33 / 256},
+		["TANK"] = {100 / 256, 132 / 256, 1 / 256, 33 / 256},
+		["RESTING"] = {133 / 256, 165 / 256, 1 / 256, 33 / 256},
+		["COMBAT"] = {166 / 256, 198 / 256, 1 / 256, 33 / 256},
+		["HORDE"] = {199 / 256, 231 / 256, 1 / 256, 33 / 256},
 		-- second line
-		["ALLIANCE"] = {1 / 128, 17 / 128, 18 / 128, 34 / 128},
-		["FFA"] = {18 / 128, 34 / 128, 18 / 128, 34 / 128},
-		["PHASE"] = {35 / 128, 51 / 128, 18 / 128, 34 / 128},
-		["QUEST"] = {52 / 128, 68 / 128, 18 / 128, 34 / 128},
-		["SHEEP"] = {69 / 128, 85 / 128, 18 / 128, 34 / 128},
-		-- ["TEMP"] = {86 / 128, 102 / 128, 18 / 128, 34 / 128},
-		-- ["TEMP"] = {103 / 128, 119 / 128, 18 / 128, 34 / 128},
+		["ALLIANCE"] = {1 / 256, 33 / 256, 34 / 256, 66 / 256},
+		["FFA"] = {34 / 256, 66 / 256, 34 / 256, 66 / 256},
+		["PHASE"] = {67 / 256, 99 / 256, 34 / 256, 66 / 256},
+		["QUEST"] = {100 / 256, 132 / 256, 34 / 256, 66 / 256},
+		["SHEEP"] = {133 / 256, 165 / 256, 34 / 256, 66 / 256},
+		-- ["TEMP"] = {166 / 256, 198 / 256, 34 / 256, 66 / 256},
+		-- ["TEMP"] = {199 / 256, 231 / 256, 34 / 256, 66 / 256},
 		-- third line
-		-- ["TEMP"] = {1 / 128, 17 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {18 / 128, 34 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {35 / 128, 51 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {52 / 128, 68 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {69 / 128, 85 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {86 / 128, 102 / 128, 35 / 128, 51 / 128},
-		-- ["TEMP"] = {103 / 128, 119 / 128, 35 / 128, 51 / 128},
+		-- ["TEMP"] = {1 / 256, 33 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {34 / 256, 66 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {67 / 256, 99 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {100 / 256, 132 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {133 / 256, 165 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {166 / 256, 198 / 256, 67 / 256, 99 / 256},
+		-- ["TEMP"] = {199 / 256, 231 / 256, 67 / 256, 99 / 256},
 		-- fourth line
-		-- ["TEMP"] = {1 / 128, 17 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {18 / 128, 34 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {35 / 128, 51 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {52 / 128, 68 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {69 / 128, 85 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {86 / 128, 102 / 128, 52 / 128, 68 / 128},
-		-- ["TEMP"] = {103 / 128, 119 / 128, 52 / 128, 68 / 128},
+		-- ["TEMP"] = {1 / 256, 33 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {34 / 256, 66 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {67 / 256, 99 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {100 / 256, 132 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {133 / 256, 165 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {166 / 256, 198 / 256, 100 / 256, 132 / 256},
+		-- ["TEMP"] = {199 / 256, 231 / 256, 100 / 256, 132 / 256},
 		-- fifth line
-		-- ["TEMP"] = {1 / 128, 17 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {18 / 128, 34 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {35 / 128, 51 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {52 / 128, 68 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {69 / 128, 85 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {86 / 128, 102 / 128, 69 / 128, 85 / 128},
-		-- ["TEMP"] = {103 / 128, 119 / 128, 69 / 128, 85 / 128},
+		-- ["TEMP"] = {1 / 256, 33 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {34 / 256, 66 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {67 / 256, 99 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {100 / 256, 132 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {133 / 256, 165 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {166 / 256, 198 / 256, 133 / 256, 165 / 256},
+		-- ["TEMP"] = {199 / 256, 231 / 256, 133 / 256, 165 / 256},
 		-- sixth line
-		["WARRIOR"] = {1 / 128, 17 / 128, 86 / 128, 102 / 128},
-		["MAGE"] = {18 / 128, 34 / 128, 86 / 128, 102 / 128},
-		["ROGUE"] = {35 / 128, 51 / 128, 86 / 128, 102 / 128},
-		["DRUID"] = {52 / 128, 68 / 128, 86 / 128, 102 / 128},
-		["HUNTER"] = {69 / 128, 85 / 128, 86 / 128, 102 / 128},
-		["SHAMAN"] = {86 / 128, 102 / 128, 86 / 128, 102 / 128},
-		["PRIEST"] = {103 / 128, 119 / 128, 86 / 128, 102 / 128},
+		["WARRIOR"] = {1 / 256, 33 / 256, 166 / 256, 198 / 256},
+		["MAGE"] = {34 / 256, 66 / 256, 166 / 256, 198 / 256},
+		["ROGUE"] = {67 / 256, 99 / 256, 166 / 256, 198 / 256},
+		["DRUID"] = {100 / 256, 132 / 256, 166 / 256, 198 / 256},
+		["HUNTER"] = {133 / 256, 165 / 256, 166 / 256, 198 / 256},
+		["SHAMAN"] = {166 / 256, 198 / 256, 166 / 256, 198 / 256},
+		["PRIEST"] = {199 / 256, 231 / 256, 166 / 256, 198 / 256},
 		-- seventh line
-		["WARLOCK"] = {1 / 128, 17 / 128, 103 / 128, 119 / 128},
-		["PALADIN"] = {18 / 128, 34 / 128, 103 / 128, 119 / 128},
-		["DEATHKNIGHT"] = {35 / 128, 51 / 128, 103 / 128, 119 / 128},
-		["MONK"] = {52 / 128, 68 / 128, 103 / 128, 119 / 128},
-		["DEMONHUNTER"] = {69 / 128, 85 / 128, 103 / 128, 119 / 128},
-		-- ["TEMP"] = {86 / 128, 102 / 128, 103 / 128, 119 / 128},
-		-- ["TEMP"] = {103 / 128, 119 / 128, 103 / 128, 119 / 128},
+		["WARLOCK"] = {1 / 256, 33 / 256, 199 / 256, 231 / 256},
+		["PALADIN"] = {34 / 256, 66 / 256, 199 / 256, 231 / 256},
+		["DEATHKNIGHT"] = {67 / 256, 99 / 256, 199 / 256, 231 / 256},
+		["MONK"] = {100 / 256, 132 / 256, 199 / 256, 231 / 256},
+		["DEMONHUNTER"] = {133 / 256, 165 / 256, 199 / 256, 231 / 256},
+		-- ["TEMP"] = {166 / 256, 198 / 256, 199 / 256, 231 / 256},
+		-- ["TEMP"] = {199 / 256, 231 / 256, 199 / 256, 231 / 256},
 	},
 	inlineicons = {
 		-- first line
-		["LEADER"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:1:17|t",
-		["DAMAGER"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:1:17|t",
-		["HEALER"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:1:17|t",
-		["TANK"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:1:17|t",
-		["RESTING"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:1:17|t",
-		["COMBAT"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:1:17|t",
-		["HORDE"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:1:17|t",
+		["LEADER"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:1:33|t",
+		["DAMAGER"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:1:33|t",
+		["HEALER"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:1:33|t",
+		["TANK"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:1:33|t",
+		["RESTING"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:1:33|t",
+		["COMBAT"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:1:33|t",
+		["HORDE"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:1:33|t",
 		-- second line
-		["ALLIANCE"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:18:34|t",
-		["FFA"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:18:34|t",
-		["PHASE"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:18:34|t",
-		["QUEST"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:18:34|t",
-		["SHEEP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:18:34|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:18:34|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:18:34|t",
+		["ALLIANCE"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:34:66|t",
+		["FFA"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:34:66|t",
+		["PHASE"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:34:66|t",
+		["QUEST"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:34:66|t",
+		["SHEEP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:34:66|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:34:66|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:34:66|t",
 		-- third line
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:35:51|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:35:51|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:67:99|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:67:99|t",
 		-- fourth line
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:52:68|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:52:68|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:100:132|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:100:132|t",
 		-- fifth line
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:69:85|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:69:85|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:133:165|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:133:165|t",
 		-- sixth line
-		["WARRIOR"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:86:102|t",
-		["MAGE"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:86:102|t",
-		["ROGUE"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:86:102|t",
-		["DRUID"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:86:102|t",
-		["HUNTER"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:86:102|t",
-		["SHAMAN"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:86:102|t",
-		["PRIEST"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:86:102|t",
+		["WARRIOR"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:166:198|t",
+		["MAGE"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:166:198|t",
+		["ROGUE"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:166:198|t",
+		["DRUID"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:166:198|t",
+		["HUNTER"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:166:198|t",
+		["SHAMAN"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:166:198|t",
+		["PRIEST"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:166:198|t",
 		-- seventh line
-		["WARLOCK"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:1:17:103:119|t",
-		["PALADIN"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:18:34:103:119|t",
-		["DEATHKNIGHT"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:35:51:103:119|t",
-		["MONK"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:52:68:103:119|t",
-		["DEMONHUNTER"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:69:85:103:119|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:86:102:103:119|t",
-		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\icons:%d:%d:0:0:128:128:103:119:103:119|t",
+		["WARLOCK"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:1:33:199:231|t",
+		["PALADIN"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:34:66:199:231|t",
+		["DEATHKNIGHT"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:67:99:199:231|t",
+		["MONK"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:100:132:199:231|t",
+		["DEMONHUNTER"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:133:165:199:231|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:166:198:199:231|t",
+		-- ["TEMP"] = "|TInterface\\AddOns\\ls_UI\\media\\unit-frame-icons:%d:%d:0:0:256:256:199:231:199:231|t",
 	},
 }
 
@@ -283,11 +292,18 @@ E.SCREEN_HEIGHT = E:Round(_G.UIParent:GetTop())
 E.SCREEN_WIDTH = E:Round(_G.UIParent:GetRight())
 E.SCREEN_SCALE = _G.UIParent:GetScale()
 
+E.VER = {
+	string = _G.GetAddOnMetadata(addon, "Version")
+}
+E.VER.number = tonumber(E.VER.string:gsub("%D", ""), nil)
+
 local function UpdateScreenConstants()
 	E.SCREEN_HEIGHT = E:Round(_G.UIParent:GetTop())
 	E.SCREEN_WIDTH = E:Round(_G.UIParent:GetRight())
 	E.SCREEN_SCALE = _G.UIParent:GetScale()
 end
+
+E.NAME_REALM = _G.UnitName("player") .. " - " .. _G.GetRealmName()
 
 E:RegisterEvent("DISPLAY_SIZE_CHANGED", UpdateScreenConstants)
 E:RegisterEvent("UI_SCALE_CHANGED", UpdateScreenConstants)
@@ -301,69 +317,4 @@ function E:UpdateConstants()
 	end
 
 	E.PLAYER_GUID = _G.UnitGUID("player")
-end
-
-do
-	local mixin = {}
-
-	function mixin:SetVertexColor(r, g, b, a)
-		self.Fill:SetVertexColor(r, g, b, a or 1)
-		self.FillScroll1:SetVertexColor(r, g, b, a or 1)
-		self.FillScroll2:SetVertexColor(r, g, b, a or 1)
-	end
-
-	function mixin:GetVertexColor()
-		return self.Fill:GetVertexColor()
-	end
-
-	function mixin:SetThickness(thickness)
-		self.Fill:SetThickness(thickness)
-		self.FillScroll1:SetThickness(thickness)
-		self.FillScroll2:SetThickness(thickness)
-	end
-
-	function mixin:SetOrientation(flag)
-		if flag == "HORIZONTAL" then
-			self.orientation = flag
-
-			self.Fill:SetStartPoint("LEFT", self)
-			self.FillScroll1:SetStartPoint("LEFT", self)
-			self.FillScroll2:SetStartPoint("LEFT", self)
-
-			self.Fill:SetEndPoint("RIGHT", self)
-			self.FillScroll1:SetEndPoint("RIGHT", self)
-			self.FillScroll2:SetEndPoint("RIGHT", self)
-		else
-			self.orientation = "VERTICAL"
-
-			self.Fill:SetStartPoint("BOTTOM", self)
-			self.FillScroll1:SetStartPoint("BOTTOM", self)
-			self.FillScroll2:SetStartPoint("BOTTOM", self)
-
-			self.Fill:SetEndPoint("TOP", self)
-			self.FillScroll1:SetEndPoint("TOP", self)
-			self.FillScroll2:SetEndPoint("TOP", self)
-		end
-	end
-
-	function mixin:OnLoad()
-		self:SetOrientation("HORIZONTAL")
-		self:SetThickness(16 * E.SCREEN_SCALE)
-		self:RegisterEvent("DISPLAY_SIZE_CHANGED")
-		self:RegisterEvent("UI_SCALE_CHANGED")
-	end
-
-	function mixin:OnEvent()
-		self:SetThickness(16 * E.SCREEN_SCALE)
-	end
-
-	function mixin:AdjustTiling()
-		self.tileAmount = self.orientation == "HORIZONTAL" and self:GetWidth() / 128 or self:GetHeight() / 128
-
-		self.Fill:SetTexCoord(0, self.tileAmount, 0, 1)
-		self.FillScroll1:SetTexCoord(0, self.tileAmount, 0, 1)
-		self.FillScroll2:SetTexCoord(0, self.tileAmount, 0, 1)
-	end
-
-	LSUILineMixin = mixin
 end

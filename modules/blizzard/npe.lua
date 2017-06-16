@@ -8,16 +8,12 @@ local _G = getfenv(0)
 -- Mine
 local isInit = false
 
------------------
--- INITIALISER --
------------------
-
-function BLIZZARD:NPE_IsInit()
+function BLIZZARD:HasNPE()
 	return isInit
 end
 
-function BLIZZARD:NPE_Init()
-	if not isInit and C.blizzard.npe.enabled then
+function BLIZZARD:SetUpNPE()
+	if not isInit and C.db.char.blizzard.npe.enabled then
 		E:AddOnLoadTask("Blizzard_Tutorial", function()
 			local holder = _G.CreateFrame("Frame", "NPE_TutorialInterfaceHelpHolder", _G.UIParent)
 			holder:SetFrameLevel(_G.NPE_TutorialInterfaceHelp:GetFrameLevel() + 1)
@@ -38,9 +34,8 @@ function BLIZZARD:NPE_Init()
 			end)
 		end)
 
-		-- Finalise
 		isInit = true
 
-		return true
+		self.SetUpNPE = E.NOOP
 	end
 end
